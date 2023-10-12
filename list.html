@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>To-Do List</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #b3b3cc; /* Light purple background */
+            background: url('todo.png') center center fixed;
+            font-family: Arial, sans-serif; /* Change the font family for the entire document */
+        }
+
+        #container {
+            text-align: center;
+            background-color: #f1d3e5;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Added push-up effect */
+        }
+
+        /* Define the same border color for both input fields */
+        .input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .task-input, .datetime-input {
+            border: 2px solid #7554a1; /* Darker purple border */
+            border-radius: 12px;
+            padding: 10px;
+            margin: 5px;
+            font-size: 16px;
+            width: 45%;
+            font-family: 'Times New Roman', Times, serif;
+            
+            
+        }
+
+        .add-button {
+            border: none;
+            border-radius: 12px;
+            padding: 10px 20px;
+            background-color: #7554a1; /* Darker purple background */
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .add-button:hover {
+            background-color: #563d7c; /* Hover color */
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: medium;
+        }
+
+        li button {
+            background-color: #7554a1;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 5px 10px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Style the "TO-DO LIST" header */
+        h1 {
+            font-size: 24px; /* Reduce the font size */
+            font-weight: bold; /* Make it bold */
+            color: #7554a1; /* Darker purple color */
+            font-family: 'Times New Roman', Times, serif;
+            font-style: calc();
+        }
+
+        /* Style the "Due On" column */
+        .due-on {
+            font-size: 16px; /* Font size for "Due On" */
+            color: #563d7c; /* Darker purple color for "Due On" */
+        }
+
+        /* Style the task text as bulletin with custom font */
+        .task-text {
+            color: #563d7c; /* Purple color for task text */
+            list-style: inside disc; /* Make it look like a bulletin */
+            margin-left: 20px; /* Adjust margin for bullet effect */
+            font-family: 'Times New Roman', Times, serif
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1><b>TO-DO LIST</b></h1>
+        <div class="input-container">
+            <input type="text" id="task" class="task-input" placeholder="Add a new task">
+            <input type="datetime-local" id="datetime" class="datetime-input">
+            <button onclick="addTask()" class="add-button">Add</button>
+        </div>
+        
+        <ul id="taskList">
+            <!-- Tasks will be added here -->
+        </ul>
+    </div>
+
+    <script>
+        const tasks = [];
+
+        function addTask() {
+            var taskInput = document.getElementById("task");
+            var datetimeInput = document.getElementById("datetime");
+            var taskText = taskInput.value;
+            var taskDateTime = datetimeInput.value;
+
+            if (taskText.trim() === "") {
+                alert("Please enter a task.");
+            } else if (!taskDateTime) {
+                alert("Please select a date and time.");
+            } else {
+                const isDuplicate = tasks.some(task => task.dateTime === taskDateTime);
+                if (isDuplicate) {
+                    alert("This task with the same date and time already exists.");
+                } else {
+                    var taskList = document.getElementById("taskList");
+                    var listItem = document.createElement("li");
+
+                    // Add the "Delete" button
+                    listItem.innerHTML = `<span class="task-text">Task: ${taskText}</span> - <span class="due-on">Due on: ${taskDateTime}</span> <button onclick="deleteTask(this)"> Delete </button>`;
+                    taskList.appendChild(listItem);
+
+                    // Add the task to the list of tasks
+                    tasks.push({ text: taskText, dateTime: taskDateTime });
+
+                    taskInput.value = ""; // Clear the task input field
+                    datetimeInput.value = ""; // Clear the datetime input field
+                }
+            }
+        }
+
+        function deleteTask(button) {
+            var listItem = button.parentNode;
+            var taskText = listItem.textContent.split(" - Due on: ")[0]; // Extract the task text
+
+            // Find the task index in the tasks array
+            var taskIndex = tasks.findIndex(task => task.text === taskText);
+
+            if (taskIndex !== -1) {
+                tasks.splice(taskIndex, 1); // Remove the task from the tasks array
+            }
+
+            listItem.remove(); // Remove the list item from the display
+        }
+    </script>
+</body>
+</html>
